@@ -1,4 +1,4 @@
-FROM alpine:3.7 AS build
+FROM alpine:3.7 AS builder
 
 ## NGINX ENV VARS
 ENV NGINX_SRC_DIR=/usr/local/src/
@@ -15,7 +15,13 @@ RUN apk update && apk add --no-cache \
       pcre-dev \
       libressl-dev \
       zlib \
-      zlib-dev
+      zlib-dev && \
+      rm -rf /var/cache/apk/*
+
+RUN mkdir /var/log/nginx && \
+    touch $NGINX_PID_FILE $(date +%s) && \
+    touch $NGINX_ERROR_LOG $(date +%s) && \
+    touch $NGINX_ACCESS_LOG $(date +%s)
 
 ADD nginx-1.15.7.tar.gz $NGINX_SRC_DIR
 
@@ -32,5 +38,31 @@ RUN ./configure \
 
 RUN make && \
       make install
+
+RUN mkdir /etc/nginx/conf.d
+
+COPY nginx.conf /etc/nginx/nginx.conf
+
+COPY default.conf /etc/nginx/conf.d/default.conf
+
+FROM alpine:3.7
+
+RUN apk update && apk add --no-cache \
+      pcre-dev \
+      pcre-dev \
+      libressl-dev \
+      zlib \
+      zlib-dev && \
+      rm -rf /var/cache/apk/*
+
+
+RUN mkdir /var/log/nginx && \
+    touch $NGINX_PID_FILE $(date +%s) && \
+    touch $NGINX_ERROR_LOG $(date +%s) && \
+    touch $NGINX_ACCESS_LOG $(date +%s)
+
+COPY --from=builder /etc/nginx /etc/nginx
+COPY --from=builder /usr/local/nginx /usr/local/nginx
+COPY --from=builder /usr/bin/nginx /usr/bin/nginx
 
 CMD ["nginx", "-g", "daemon off;"]
