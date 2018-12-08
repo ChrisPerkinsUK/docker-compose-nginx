@@ -10,11 +10,10 @@
 FROM alpine:3.7 AS builder
 
 ## NGINX ENV VARS
-ENV NGINX_SRC_DIR=/usr/local/src/
+ENV NGINX_SRC_DIR=/usr/local/src
 ENV NGINX_PATH=/usr/bin/nginx
 ENV NGINX_MODULES_DIR=/usr/local/nginx/modules
 ENV NGINX_CONFIG_FILE=/etc/nginx/nginx.conf
-ENV NGINX_STATIC_HTML_DIR=/var/www/html
 ENV NGINX_PID_FILE=/var/run/nginx.pid
 ENV NGINX_ERROR_LOG=/var/log/nginx/error.log
 ENV NGINX_ACCESS_LOG=/var/log/nginx/access.log
@@ -105,8 +104,8 @@ RUN apk update && apk add --no-cache \
 ## Create a PID file for Nginx
 ## Create an Error Log file
 ## Create an Access log file
-RUN mkdir /var/log/nginx && \
-    mkdir $NGINX_STATIC_HTML_DIR && \
+RUN mkdir /var/log/nginx/ && \
+    mkdir -p /var/www/html/ && \
     touch $NGINX_PID_FILE $(date +%s) && \
     touch $NGINX_ERROR_LOG $(date +%s) && \
     touch $NGINX_ACCESS_LOG $(date +%s)
