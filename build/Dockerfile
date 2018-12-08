@@ -9,6 +9,8 @@
 ################################################
 FROM alpine:3.7 AS builder
 
+LABEL maintainer="chrisperkinsuk@gmail.com"
+
 ## NGINX ENV VARS
 ENV NGINX_SRC_DIR=/usr/local/src
 ENV NGINX_PATH=/usr/bin/nginx
