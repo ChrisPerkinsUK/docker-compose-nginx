@@ -90,6 +90,10 @@ COPY default.conf /etc/nginx/conf.d/default.conf
 ################################################
 FROM alpine:3.7
 
+## Add the www-data user
+RUN addgroup -g 1000 -S www-data \
+    && adduser -u 1000 -D -S -G www-data www-data
+
 ## Install packages needed by Nginx
 RUN apk update && apk add --no-cache \
       pcre-dev \
