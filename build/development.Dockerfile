@@ -61,6 +61,7 @@ RUN ./configure \
       --pid-path=$NGINX_PID_FILE \
       --with-http_ssl_module \
       --with-pcre \
+      --with-debug \
       --sbin-path=$NGINX_PATH
 
 ## Compile the Configured Sources Files
@@ -74,11 +75,11 @@ RUN mkdir /etc/nginx/conf.d
 
 ## Copy in a default configuration file
 ## for Nginx to the OS image
-COPY nginx.conf /etc/nginx/nginx.conf
+COPY development-nginx.conf /etc/nginx/nginx.conf
 
 ## Copy in a default virtual-host (Server)
 ## file for Nginx to the OS image
-COPY default.conf /etc/nginx/conf.d/default.conf
+COPY development-default.conf /etc/nginx/conf.d/default.conf
 
 ################################################
 #######  Use Multistage buld to reduce   #######
